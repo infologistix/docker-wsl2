@@ -46,7 +46,9 @@ cat > $HOME/.docker/config.json<<EOF
 EOF
 echo -e "Configuring Services and Startup"
 mkdir -p $HOME/bin
-## curl docker-service and place it into /bin/docker-service
+curl -fsSL https://raw.githubusercontent.com/infologistix/docker-wsl2/main/files/docker-service -o $HOME/bin/docker-service
+# configuring Service Startup
+# Might be moved from docker-service to another bake :)
 sudo tee /etc/profile.d/zzz-zzz-dockerd.sh<<EOF
 source $HOME/bin/docker-service
 EOF
