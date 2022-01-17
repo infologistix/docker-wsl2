@@ -1,0 +1,13 @@
+{
+    "log-driver": "json-file",
+    "log-level": "warn",
+    "log-opts": {
+        "max-size": "10m",
+        "max-file": "5"
+    },
+    "group": "users",
+    "experimental": false,
+    "host": [
+        "unix:///mnt/wsl/shared-docker/docker.sock"
+    ]
+}
