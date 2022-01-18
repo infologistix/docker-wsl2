@@ -1,15 +1,5 @@
 # infologistix docker service runner
 
 NO_PROXY="127.0.0.1,localhost,${NO_PROXY}"
-[ -z "$1" ] && DOCKER_DISTRO="$WSL_DISTRO_NAME" || DOCKER_DISTRO="$1"
-DOCKER_DIR=/mnt/wsl/shared-docker
-DOCKER_SOCK=$DOCKER_DIR/docker.sock
-export DOCKER_HOST="unix://$DOCKER_SOCK"
-if [ ! -S "$DOCKER_SOCK" ]; then
-    mkdir -pm o=,ugrwx "$DOCKER_DIR"
-    chgrp docker "$DOCKER_DIR"
-    /mnt/c/Windows/system32/wsl.exe -d $DOCKER_DISTRO sh -c "nohup sudo -b dockerd < /dev/null > $DOCKER_DIR/dockerd.log 2>&1"
-fi
-
 # alias for docker and wsl restart
 alias wsl_restart = "/mnt/c/Windows/system32/wsl.exe -d $WSL_DISTRO_NAME --shutdown"

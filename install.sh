@@ -36,7 +36,8 @@ sudo tee /etc/docker/daemon.json<<EOF
     "group": "users",
     "experimental": false,
     "host": [
-        "unix:///mnt/wsl/shared-docker/docker.sock"
+        "unix:///var/run/docker.sock",
+        "tcp://localhost:2375"
     ]
 }
 EOF
@@ -47,22 +48,27 @@ EOF
 echo -e "Configuring Services and Startup"
 mkdir -p $HOME/bin
 curl -fsSL https://raw.githubusercontent.com/infologistix/docker-wsl2/main/files/docker-service -o $HOME/bin/docker-service
+curl -fsSL https://raw.githubusercontent.com/infologistix/docker-wsl2/main/files/dockerd -o /etc/init.d/dockerd
 # configuring Service Startup
 # Might be moved from docker-service to another bake :)
 sudo tee /etc/profile.d/zzz-zzz-dockerd.sh<<EOF
+sudo service dockerd start
 source $HOME/bin/docker-service
 EOF
 sudo tee -a /etc/sudoers<<EOF
-Defaults env_keep=DOCKER_HOST
-%users ALL=(ALL) NOPASSWD: ALL
-%docker ALL=(ALL) NOPASSWD: /usr/bin/dockerd /etc/init.d/dockerd
+%docker ALL=(ALL) NOPASSWD: /usr/bin/dockerd
+%users ALL=(ALL) NOPASSWD: /usr/sbin/service dockerd*
 EOF
 sudo usermod -aG docker $USER
+sudo service docker start
 }
 
+config_windows() {
+    ## work to be done...
+    #curl -fsSL https://github.com/StefanScherer/docker-cli-builder/releases/download/20.10.9/docker.exe -o /mnt/c/Anwendungen
+}
 
 # Windows Preliminaries are currently missing
 install
 
-echo -e "After installing. This is doing a clean restart...\nPlease oopen an new window!"
-wsl.exe --shutdown -d $WSL_DISTRO_NAME
+echo -e "Docker is now available: Try: 'docker ps'"
