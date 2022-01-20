@@ -11,11 +11,24 @@ debian(){
     sudo apt install docker-ce docker-ce-client containerd.io
 }
 
+ubuntu(){
+    # this installs even the service for us...
+    sudo apt install ca-certificates gnupg lsb-release
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    sudo apt update
+    sudo apt install docker-ce docker-ce-client containerd.io
+}
+
 install_docker(){
     ## debian based
     if [[ ! $(command -v apt) = "" ]]; then
     echo -e "This is Debian-based\nInstalling with apt..."
-    debian
+    if [[ $(lsb_release -is) = "Ubuntu" ]]; then
+        ubuntu
+    else
+        debian
+    fi
     fi
     if [[ ! $(command -v zypper) = "" ]]; then
     echo -e "This is OpenSUSE\nInstalling with zypper..."
