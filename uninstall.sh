@@ -18,7 +18,7 @@ sudo rm /etc/docker/daemon.json*
 sudo rm /etc/init.d/docker
 sudo rm /etc/profile.d/zzz-zzz-docker.sh
 sudo sed -i '/%docker ALL=(ALL) NOPASSWD: \/usr\/bin\/dockerd/d' /etc/sudoers
-sudo sed -i '/%users ALL=(ALL) NOPASSWD: \/usr\/sbin\/service docker */d' /etc/sudoers
+sudo sed -i '/%docker ALL=(ALL) NOPASSWD: \/usr\/sbin\/service docker */d' /etc/sudoers
 }
 
 read -p "This will uninstall docker! Continue? [yN]: " CONFIRM
