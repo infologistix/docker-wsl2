@@ -1,8 +1,5 @@
 #!/bin/bash
 
-
-# preliminaries
-
 PATH=$PATH:/mnt/c/Windows/system32:/mnt/c/windows/system32/WindowsPowershell/v1.0/
 
 debian(){
@@ -54,31 +51,32 @@ cat > $HOME/.docker/config.json<<EOF
 EOF
 echo -e "Configuring Services and Startup"
 mkdir -p $HOME/bin
+echo "alias wsl_restart='/mnt/c/windows/system32/wsl.exe --shutdown $WSL_DISTRO_NAME'">$HOME/bin/docker-service
 # configuring Service Startup
 # Might be moved from docker-service to another bake :)
-sudo tee /etc/profile.d/zzz-zzz-dockerd.sh<<EOF
-sudo service dockerd start
-alias wsl_restart = "/mnt/c/Windows/system32/wsl.exe -d $WSL_DISTRO_NAME --shutdown"
+sudo tee /etc/profile.d/zzz-zzz-docker.sh<<EOF
+sudo service docker start
+source $HOME/bin/docker-service
 EOF
 sudo tee -a /etc/sudoers<<EOF
 %docker ALL=(ALL) NOPASSWD: /usr/bin/dockerd
-%users ALL=(ALL) NOPASSWD: /usr/sbin/service dockerd*
+%users ALL=(ALL) NOPASSWD: /usr/sbin/service docker *
 EOF
 sudo usermod -aG docker $USER
-newgrp docker
-sudo service docker start
 }
 
-config_windows() {
-    ## work to be done...
-    mdkir -p /mnt/c/Docker
-    curl -fsSL https://github.com/StefanScherer/docker-cli-builder/releases/download/20.10.9/docker.exe -o /mnt/c/Docker/docker.exe
-    echo -e "Please add 'C:\Docker' to PATH Variable..."
-    echo -e "------------IMPORTANT---------------------"
-    echo -e "Press Windows-Key -> Type 'systemvar' and press enter."
-    echo -e "Continue clicking to 'Edit Variables | Variablen bearbeiten'"
-    echo -e "Add 'C:\Docker to PATH Variable and save."
-    echo -e "---------------END------------------------"
+config_windows(){
+mkdir -p /mnt/c/Docker
+echo -e "\n------------------------------------------------"
+echo -e "Downloading Docker Client for Windows to C:\Docker"
+echo -e "-------------------------------------------------"
+curl -fSL https://github.com/StefanScherer/docker-cli-builder/releases/download/20.10.9/docker.exe -o /mnt/c/Docker/docker.exe
+echo -e "\nPlease add 'C:\Docker' to PATH Variable..."
+echo -e "------------IMPORTANT---------------------"
+echo -e "Press Windows-Key -> Type 'systemvar' and press enter."
+echo -e "Continue clicking to 'Edit Variables | Variablen bearbeiten'"
+echo -e "Add 'C:\Docker to PATH Variable and save."
+echo -e "---------------END------------------------"
 }
 
 # Windows Preliminaries are currently missing
@@ -86,3 +84,5 @@ install
 config_windows
 
 echo -e "Docker is now available: Try: 'docker ps'"
+read -p "Hit any Key to continue..." $KEY
+wsl.exe --shutdown $WSL_DISTRO_NAME
