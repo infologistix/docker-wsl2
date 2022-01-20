@@ -1,0 +1,110 @@
+#!/bin/bash
+
+## This implementation is just a pragmatic vehicle in the absence of a proper init process
+## on WSL; don't expect a clean and robust UNIX daemon implementation here. In a regular
+## environment, systemd would be the tool of choice.
+
+
+#prefix='/mnt/wsl/shared-docker'
+prefix='/var/run'
+pidfile='/run/docker.pid'
+socket="${prefix}/docker.sock"
+group='users' ## hence no need to put any user-specific handling into this package
+log="${prefix}/dockerd.log"
+
+function println {
+  printf '%s\n' "$*"
+}
+
+function msg {
+  println "$@" >&2
+}
+
+function pid_of {
+  if [[ -f "${pidfile}" ]]
+  then
+    cat "${pidfile}"
+  fi
+}
+
+function run {
+  setsid dockerd < /dev/null &> "${log}" &
+}
+
+function start {
+ pid="$(pid_of)"
+  if [[ "${pid}" ]]
+  then
+    msg "An instance of dockerd seems already running with PID ${pid}; delete ${pidfile} if this is not the case."
+    exit 1
+  fi
+
+  run
+  while [[ ! -e "${pidfile}" ]]
+  do
+    sleep 1
+  done
+  pid="$(pid_of)"
+  msg "Running with PID ${pid}, logging to ${log}."
+}
+
+function stop {
+  pid="$(pid_of)"
+  if [[ -z "${pid}" ]]
+  then
+    msg "No dockerd seems to be running."
+    exit 1
+  fi
+
+  msg "Shutting down process ${pid}…"
+  kill "${pid}"
+  while [[ -e "${pidfile}" ]]
+  do
+    sleep 1
+  done
+}
+
+function ensure {
+
+  pid="$(pid_of)"
+  if [[ "${pid}" ]]
+  then
+    exit 0
+  fi
+
+  run
+}
+
+function status {
+  pid="$(pid_of)"
+  if [[ "${pid}" ]]
+  then
+    echo "dockerd with PID ${pid} logging to ${log}:"
+    tail -n 10 "${log}"
+  else
+    println "dockerd: Not running."
+  fi
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  restart)
+    stop
+    start
+    ;;
+  ensure)
+    ensure
+    ;;
+  status)
+    status
+    ;;
+  *)
+    echo $"Usage: $0 {start|stop|restart|ensure|status}"
+    exit 1
+esac
+
