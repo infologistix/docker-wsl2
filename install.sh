@@ -36,7 +36,7 @@ sudo tee /etc/docker/daemon.json<<EOF
         "max-file": "5"
     },
     "experimental": false,
-    "host": [
+    "hosts": [
         "unix:///var/run/docker.sock",
         "tcp://localhost:2375"
     ]
