@@ -37,4 +37,4 @@ remove_files
 echo -e "This script waits 10s after Removing. This is doing a clean restart...\nPlease open an new window!"
 echo -e "+ 10s"
 sleep 10
-#wsl.exe --shutdown -d $WSL_DISTRO_NAME
+wsl.exe --shutdown -d $WSL_DISTRO_NAME
