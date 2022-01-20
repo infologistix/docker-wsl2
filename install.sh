@@ -24,11 +24,13 @@ install_docker(){
     ## debian based
     if [[ ! $(command -v apt) = "" ]]; then
     echo -e "This is Debian-based\nInstalling with apt..."
-    if [[ $(lsb_release -is) = "Ubuntu" ]]; then
-        ubuntu
-    else
-        debian
-    fi
+    sudo apt update
+    sudo apt install -y ca-certificates gnupg lsb-release
+    source /etc/os-release
+    curl -fsSL https://download.docker.com/linux/${ID}/gpg | sudo apt-key add -
+    echo "deb [arch=amd64] https://download.docker.com/linux/${ID} ${VERSION_CODENAME} stable" | sudo tee /etc/apt/sources.list.d/docker.list
+    sudo apt update
+    sudo apt install -y docker-ce docker-ce-cli containerd.io
     fi
     if [[ ! $(command -v zypper) = "" ]]; then
     echo -e "This is OpenSUSE\nInstalling with zypper..."
@@ -42,6 +44,7 @@ install(){
 echo -e "Installing docker with OS-setup"
 install_docker
 echo -e "Creating docker config..."
+sudo mkdir -p /etc/docker
 sudo tee /etc/docker/daemon.json<<EOF
 {
     "log-driver": "json-file",
@@ -50,7 +53,6 @@ sudo tee /etc/docker/daemon.json<<EOF
         "max-size": "10m",
         "max-file": "5"
     },
-    "group": "users",
     "experimental": false,
     "host": [
         "unix:///var/run/docker.sock",
