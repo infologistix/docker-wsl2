@@ -14,7 +14,7 @@ remove_install(){
 }
 
 remove_files(){
-sudo rm /etc/docker/daemon.json
+sudo rm /etc/docker/daemon.json*
 sudo rm /etc/init.d/docker
 sudo rm /etc/profile.d/zzz-zzz-docker.sh
 sudo sed -i '/%docker ALL=(ALL) NOPASSWD: \/usr\/bin\/dockerd/d' /etc/sudoers
