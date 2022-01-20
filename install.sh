@@ -16,11 +16,11 @@ debian(){
 
 install_docker(){
     ## debian based
-    if [[ $(command -v apt) = ""]]; then
+    if [[ ! $(command -v apt) = "" ]]; then
     echo -e "This is Debian-based\nInstalling with apt..."
     debian
     fi
-    if [[ $(command -v zypper) = ""]]; then
+    if [[ ! $(command -v zypper) = "" ]]; then
     echo -e "This is OpenSUSE\nInstalling with zypper..."
     # openSUSE does not ship any service. Doing this by ourselves.
     sudo zypper in -y docker
