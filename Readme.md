@@ -6,7 +6,7 @@ Docs:
 
 ## DE
 
-Dieser Installer ermöglicht eine nahtlose Integration von Docker in ein Windows Environment. Einzige Voraussetzung ist eine installierte WSL-Distribution. Für diese Installation wird die Docker-Engine für Linux verwendet und die Docker-Desktop Version komplett aus dem System eliminiert.
+Dieser Installer ermöglicht eine nahtlose Integration von Docker in ein Windows Environment. Einzige Voraussetzung ist eine installierte WSL-Distribution. Für diese Installation wird die Docker-Engine für Linux verwendet und die Docker-Desktop Version komplett aus dem System eliminiert.Eine ausführliche Anleitung ist hier zu finden: https://infologistix.de/docker-desktop-kostenfreie-alternative/
 
 ### Installation
 
@@ -36,7 +36,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/infologistix/docker-wsl2/mai
 
 ## EN
 
-This installer enables a seamless integration of Docker into a Windows environment. The only requirement is an installed WSL distribution. For this installation, the Docker Engine for Linux is used and Docker Desktop is completely eliminated from the system.
+This installer enables a seamless integration of Docker into a Windows environment. The only requirement is an installed WSL distribution. For this installation, the Docker Engine for Linux is used and Docker Desktop is completely eliminated from the system. A detailed instruction can be found here: https://infologistix.de/en/docker-desktop-becomes-a-paid-subscription-service-discover-our-free-alternative/
 
 ### Installation
 
